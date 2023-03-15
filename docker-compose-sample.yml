@@ -1,0 +1,32 @@
+version: '2'
+services:
+  back:
+    container_name: test.back
+    image: ertfly/php8.1-apache-buster
+    build: .
+    restart: always
+    ports:
+      - '8030:80'
+    volumes:
+      - ./back:/app
+    networks:
+      - test-net
+  db:
+    container_name: test.db
+    image: mariadb
+    restart: always
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: Perf@2465
+      MYSQL_DATABASE: perfectpay
+      MYSQL_USER: perfectpay
+      MYSQL_PASSWORD: Perf@2465
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - test-net
+      
+networks:
+  test-net:
+    external: true
