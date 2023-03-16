@@ -1,6 +1,6 @@
-function Loader({show}) {
+function Loader({ show }) {
 
-    if(!show){
+    if (!show) {
         return;
     }
 

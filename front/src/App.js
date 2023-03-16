@@ -61,6 +61,9 @@ function App() {
 
     }, (err) => {
       setError(err)
+      window.setTimeout(_=>{
+        setError('')
+      },3000)
     })
   }
   const [loader, setLoader] = useState(false)
