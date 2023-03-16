@@ -16,10 +16,10 @@ function App() {
     <div className="container mt-4">
       <div className="row">
         <div className="col-md-6">
-          <div className={(page === 1 ? 'bg-primary text-white' : 'bg-light') + ' p-3 text-center'}>1. Dados Pessoais</div>
+          <div className={(page === 1 ? 'bg-primary text-white' : 'bg-light') + ' p-3 text-center rounded-pill'}>1. Dados Pessoais</div>
         </div>
         <div className="col-md-6">
-          <div className={(page === 2 ? 'bg-primary text-white' : 'bg-light') + ' p-3 text-center'}>2. Formas de Pagamento</div>
+          <div className={(page === 2 ? 'bg-primary text-white' : 'bg-light') + ' p-3 text-center rounded-pill'}>2. Formas de Pagamento</div>
         </div>
       </div>
       {page === 1 ?
@@ -64,6 +64,7 @@ function App() {
             </div>
             <div className="row mt-3">
               <div className="col-md-12 text-right">
+                <span className="btn btn-warning mr-3" onClick={_ => setPage(1)}>VOLTAR</span>
                 <button type="submit" className="btn btn-primary">PROCESSAR PAGAMENTO</button>
               </div>
             </div>
