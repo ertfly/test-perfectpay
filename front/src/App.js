@@ -3,6 +3,7 @@ import { useState } from "react";
 function App() {
   const [page, setPage] = useState(1)
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const submitPersonalData = (e) => {
     e.preventDefault()
     setPage(2)
@@ -31,7 +32,11 @@ function App() {
                   <div className="form-row">
                     <div className="col-md-4">
                       <label>Nome Completo:</label>
-                      <input type="text" className="form-control" name="name" value={name} onChange={e => setName(e.target.value)} />
+                      <input type="text" className="form-control" value={name} onChange={e => setName(e.target.value)} />
+                    </div>
+                    <div className="col-md-4">
+                      <label>E-mail:</label>
+                      <input type="text" className="form-control" value={email} onChange={e => setEmail(e.target.value)} />
                     </div>
                   </div>
                 </div>
@@ -51,7 +56,7 @@ function App() {
                   <div className="card-header">ESCOLHA SUA FORMA DE PAGAMENTO</div>
                   <div className="card-body">
                     <div className="form-row">
-                      
+
                     </div>
                   </div>
                 </div>
