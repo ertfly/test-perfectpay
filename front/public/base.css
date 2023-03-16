@@ -1,0 +1,10 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+#root {
+    height: 100%;
+    overflow: auto;
+    background-color: #f2f2f2;
+}
