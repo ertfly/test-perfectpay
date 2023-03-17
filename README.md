@@ -17,9 +17,9 @@
 # Instruções de instalação #
 - Acesse a pasta onde irá clonar o projeto
 
-- Faça o pull da imagem **ertfly/php7.4.9-apache-buster**
+- Faça o pull da imagem **ertfly/php8.1-apache-buster**
 ```
-$ docker pull ertfly/php7.4.9-apache-buster
+$ docker pull ertfly/php8.1-apache-buster
 ```
 > **_NOTA:_**  A imagem foi criado por mim e pode validar o Dockerfile no link https://github.com/ertfly/dockerfile-php7.4.9-apache-buster
 
