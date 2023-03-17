@@ -80,7 +80,7 @@ $ docker network create test-net
 ```
     ...
     ports:
-      - '3000:3000'
+      - '3000:80'
     ...
     ...
     ports:
@@ -98,7 +98,6 @@ $ docker-compose up -d
 ```
 $ docker exec -it test.back composer install
 ```
-> **_NOTA:_**  O nome **test.back** é o nome dado no container via atributo **container_name**, caso o atributo não funcionar na sua versão do docker-compose, é só renomear o container utilizando o comando `docker rename {id_do_container} test.back`, o id do container pode ser consultado utilizando o comando `docker ps` procure o id na coluna **CONTAINER ID**.
 
 ## Se sua máquina for linux ou mac leia
 - No caso desses sitemas operacionais, as pastas do laravel **storage** ficam sem permissão de escrita, caso for execute os comandos abaixo.
