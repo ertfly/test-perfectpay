@@ -100,7 +100,6 @@ function App() {
       identificationNumber: holderDocument.replace(/\D/igm, ''),
     })
 
-
     let data = {
       name: name,
       email: email,
