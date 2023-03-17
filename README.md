@@ -17,12 +17,14 @@ $ docker pull ertfly/php8.1-apache-buster
 
 - Escolha uma pasta de preferência e clone o projeto
 ```
-$ git clone https://github.com/ertfly/teste-redbelt.git
+$ git clone https://github.com/ertfly/test-perfectpay.git
+ou
+$ git clone git@github.com:ertfly/test-perfectpay.git
 ```
 
 - Acesse a pasta do projeto
 ```
-$ cd teste-redbelt
+$ cd test-perfectpay
 ```
 
 # Entendendo a estrutura 
@@ -38,9 +40,9 @@ $ cp docker-compose.sample.yml docker-compose.yml
 ```
 > **_NOTA:_**  Os arquivos copiados estão aplicados no .gitignore, e não causará efeitos de modificação
 
-- Acesse a pasta do Laravel.
+- Acesse a pasta do backend.
 ```
-$ cd server
+$ cd back
 ```
 
 - Copie o arquivo **.env.example** renomeando para **.env**
