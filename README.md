@@ -65,6 +65,11 @@ $ cd front
 $ cp .env.sample .env
 ```
 
+- Volte a pasta raíz do projeto.
+```
+$ cd ../
+```
+
 - Criei o network dos containers
 ```
 $ docker network create test-net
