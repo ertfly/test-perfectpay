@@ -65,6 +65,7 @@ function App() {
   const [invoiceNeighborhood, setInvoiceNeighborhood] = useState('')
   const [invoiceCity, setInvoiceCity] = useState('')
   const [invoiceFederalUnit, setInvoiceFederalUnit] = useState('')
+  const [billet, setBillet] = useState('')
 
   const submitPersonalData = (e) => {
     e.preventDefault()
@@ -82,41 +83,58 @@ function App() {
   const submitCheckout = async (e) => {
     e.preventDefault()
     setLoader(true)
-    await loadMercadoPago();
-    const mp = new window.MercadoPago('TEST-2da1a4b3-6ce6-4044-b610-00718add9291', {
-      locale: 'pt-BR',
-    })
-    const paymentMethods = await mp.getPaymentMethods({ bin: cardNumber })
-    if (!paymentMethods.results && paymentMethods.results.length === 0) {
-      setError('Cartão de crédito inválido.')
-      return
-    }
-    let paymentMethodId = paymentMethods.results[0].id
+    let data
+    if (payment === 1) {
+      await loadMercadoPago();
+      const mp = new window.MercadoPago('TEST-2da1a4b3-6ce6-4044-b610-00718add9291', {
+        locale: 'pt-BR',
+      })
+      const paymentMethods = await mp.getPaymentMethods({ bin: cardNumber })
+      if (!paymentMethods.results && paymentMethods.results.length === 0) {
+        setError('Cartão de crédito inválido.')
+        return
+      }
+      let paymentMethodId = paymentMethods.results[0].id
 
-    const issuers = await mp.getIssuers({ paymentMethodId: paymentMethodId, bin: cardNumber }).catch(e => console.error(e))
-    if (!issuers && issuers.length === 0) {
-      setError('Cartão de crédito inválido.')
-      return
-    }
-    let issuerId = issuers[0].id
+      const issuers = await mp.getIssuers({ paymentMethodId: paymentMethodId, bin: cardNumber }).catch(e => console.error(e))
+      if (!issuers && issuers.length === 0) {
+        setError('Cartão de crédito inválido.')
+        return
+      }
+      let issuerId = issuers[0].id
 
-    const cardToken = await mp.createCardToken({
-      cardNumber: cardNumber,
-      cardholderName: holderName,
-      cardExpirationMonth: expirateMonth,
-      cardExpirationYear: expirateYear,
-      securityCode: cvv,
-      identificationType: 'CPF',
-      identificationNumber: holderDocument.replace(/\D/igm, ''),
-    })
+      const cardToken = await mp.createCardToken({
+        cardNumber: cardNumber,
+        cardholderName: holderName,
+        cardExpirationMonth: expirateMonth,
+        cardExpirationYear: expirateYear,
+        securityCode: cvv,
+        identificationType: 'CPF',
+        identificationNumber: holderDocument.replace(/\D/igm, ''),
+      })
 
-    let data = {
-      name: name,
-      email: email,
-      total: parseInt(total.replace(/\D/igm, '')),
-      cardToken: cardToken.id,
-      paymentMethodId: paymentMethodId,
-      issuerId: issuerId,
+      data = {
+        name: name,
+        email: email,
+        total: parseInt(total.replace(/\D/igm, '')),
+        cardToken: cardToken.id,
+        paymentMethodId: paymentMethodId,
+        issuerId: issuerId,
+      }
+    } else {
+      data = {
+        name: name,
+        email: email,
+        total: parseInt(total.replace(/\D/igm, '')),
+        paymentMethodId: 'bolbradesco',
+        invoiceDocument: invoiceDocument.replace(/\D/igm, ''),
+        invoiceZipcode: invoiceZipcode.replace(/\D/igm, ''),
+        invoiceStreetName: invoiceStreetName,
+        invoiceStreetNumber: invoiceStreetNumber.replace(/\D/igm, ''),
+        invoiceNeighborhood: invoiceNeighborhood,
+        invoiceCity: invoiceCity,
+        invoiceFederalUnit: invoiceFederalUnit,
+      }
     }
 
     Request('POST', 'orders', data, (res) => {
@@ -125,9 +143,18 @@ function App() {
         return
       }
 
-      if (res.status !== 'approved' || res.status_detail !== 'accredited') {
-        setError('Pagamento recusado!')
-        return
+      if (payment === 1) {
+        if (res.status !== 'approved' || res.status_detail !== 'accredited') {
+          setError('Pagamento recusado!')
+          return
+        }
+      } else {
+        if (!res.transaction_details || !res.transaction_details.external_resource_url) {
+          setError('Erro ao gerar seu boleto!')
+          return
+        }
+
+        setBillet(res.transaction_details.external_resource_url)
       }
 
       setTransaction(res)
@@ -144,6 +171,14 @@ function App() {
       setCVV('')
       setHolderName('')
       setHolderDocument('')
+
+      setInvoiceDocument('')
+      setInvoiceZipcode('')
+      setInvoiceStreetName('')
+      setInvoiceStreetNumber('')
+      setInvoiceNeighborhood('')
+      setInvoiceCity('')
+      setInvoiceFederalUnit('')
     }, (err) => {
       setLoader(false)
       setError(err)
@@ -340,19 +375,31 @@ function App() {
           </form>
         ) : <></>}
         {page === 3 ? (
-          <div className="card mt-3">
-            <div className="card-body">
-              <div className="row">
-                <div className="col-md-12">
-                  <h1 className="text-center">Pagamento processado com sucesso!</h1>
-                  <h4 className="mt-4">Dados do Pagamento:</h4>
-                  <div className="bg-light border p-3">
-                    <code>{JSON.stringify(transaction, null, 4)}</code>
+          <>
+            <div className="card mt-3">
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-12">
+                    <h1 className="text-center">Pagamento processado com sucesso!</h1>
+                    {billet && payment === 2 ? (
+                      <>
+                        <h4 className="mt-4">Link do boleto:</h4>
+                        <a href={billet} target="_blank" rel="noreferrer">{billet}</a>
+                      </>
+                    ) : <></>}
+                    <h4 className="mt-4">Dados do Pagamento:</h4>
+                    <div className="bg-light border p-3">
+                      <code>{JSON.stringify(transaction, null, 4)}</code>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+            <div className="text-right mt-3">
+              <span className="btn btn-warning mr-3" onClick={_ => setPage(1)}>NOVO CHECKOUT</span>
+            </div>
+            <div className="mt-4"></div>
+          </>
         ) : <></>}
       </div>
     </>
