@@ -56,6 +56,7 @@ function App() {
   const [cvv, setCVV] = useState('')
   const [holderName, setHolderName] = useState('')
   const [holderDocument, setHolderDocument] = useState('')
+  const [transaction, setTransaction] = useState({})
 
   const submitPersonalData = (e) => {
     e.preventDefault()
@@ -72,6 +73,7 @@ function App() {
   }
   const submitCheckout = async (e) => {
     e.preventDefault()
+    setLoader(true)
     await loadMercadoPago();
     const mp = new window.MercadoPago('TEST-2da1a4b3-6ce6-4044-b610-00718add9291', {
       locale: 'pt-BR',
@@ -110,9 +112,32 @@ function App() {
     }
 
     Request('POST', 'orders', data, (res) => {
-      console.log('sucesso', res);
+      if (!res.status || !res.status_detail) {
+        setError('Ocorreu um erro ao processar o pagamento, favor tente mais tarde.')
+        return
+      }
 
+      if (res.status !== 'approved' || res.status_detail !== 'accredited') {
+        setError('Pagamento recusado!')
+        return
+      }
+
+      setTransaction(res)
+
+      setPage(3)
+      setLoader(false)
+      setName('')
+      setEmail('')
+      setTotal('')
+      setError('')
+      setCardNumber('')
+      setExpirateMonth('01')
+      setExpirateYear('2023')
+      setCVV('')
+      setHolderName('')
+      setHolderDocument('')
     }, (err) => {
+      setLoader(false)
       setError(err)
       window.setTimeout(_ => {
         setError('')
@@ -139,7 +164,7 @@ function App() {
             <div className={(page === 2 ? 'bg-primary text-white' : 'bg-light') + ' p-3 text-center rounded-pill'}>2. Formas de Pagamento</div>
           </div>
           <div className="col-md-4">
-            <div className={(page === 3 ? 'bg-primary text-white' : 'bg-light') + ' p-3 text-center rounded-pill'}>3. Pagamento realizado</div>
+            <div className={(page === 3 ? 'bg-success text-white' : 'bg-light') + ' p-3 text-center rounded-pill'}>3. Pagamento realizado</div>
           </div>
         </div>
         {error ? <div className="alert alert-danger mt-3 rounded-pill">{error}</div> : <></>}
@@ -173,75 +198,91 @@ function App() {
                 <button type="submit" className="btn btn-primary">CONTINUAR</button>
               </div>
             </div>
-          </form>) : (
-            <form onSubmit={submitCheckout}>
-              <div className="row mt-3">
-                <div className="col-md-12">
-                  <div className="card">
-                    <div className="card-header">ESCOLHA SUA FORMA DE PAGAMENTO</div>
-                    <div className="card-body">
-                      <div className="form-row">
-                        <div className="col-md-6">
-                          <span className={'btn btn-light btn-block border py-4 text-center ' + (payment === 1 ? 'bg-primary text-white' : 'text-dark')} onClick={_ => setPayment(1)}>
-                            <i className="fas fa-credit-card fa-5x"></i><br />
-                            <b className="d-inline-block mt-3">CARTÃO DE CRÉDITO</b>
-                          </span>
-                        </div>
-                        <div className="col-md-6">
-                          <span className={'btn btn-light btn-block border py-4 text-center ' + (payment === 2 ? 'bg-primary text-white' : 'text-dark')} onClick={_ => setPayment(2)}>
-                            <i className="fas fa-barcode fa-5x"></i><br />
-                            <b className="d-inline-block mt-3">BOLETO</b>
-                          </span>
-                        </div>
+          </form>) : <></>}
+        {page === 2 ? (
+          <form onSubmit={submitCheckout}>
+            <div className="row mt-3">
+              <div className="col-md-12">
+                <div className="card">
+                  <div className="card-header">ESCOLHA SUA FORMA DE PAGAMENTO</div>
+                  <div className="card-body">
+                    <div className="form-row">
+                      <div className="col-md-6">
+                        <span className={'btn btn-light btn-block border py-4 text-center ' + (payment === 1 ? 'bg-primary text-white' : 'text-dark')} onClick={_ => setPayment(1)}>
+                          <i className="fas fa-credit-card fa-5x"></i><br />
+                          <b className="d-inline-block mt-3">CARTÃO DE CRÉDITO</b>
+                        </span>
                       </div>
-                      {payment === 1 ? (
-                        <div className="form-row mt-3">
-                          <div className="col-md-4 form-group">
-                            <label>Número do Cartão:</label>
-                            <InputMask mask="num" className="form-control" value={cardNumber} onChange={e => setCardNumber(e.target.value)} />
-                          </div>
-                          <div className="col-md-2 form-group">
-                            <label>Expiração (Mês):</label>
-                            <select className="form-control" value={expirateMonth} onChange={e => setExpirateMonth(e.target.value)}>
-                              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((a, i) => (
-                                <option key={i} value={String(a).padStart(2, '0')}>{String(a).padStart(2, '0')}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="col-md-2 form-group">
-                            <label>Expiração (Ano):</label>
-                            <select className="form-control" value={expirateYear} onChange={e => setExpirateYear(e.target.value)}>
-                              {[2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030].map((a, i) => (
-                                <option key={i} value={a}>{a}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="col-md-4 form-group">
-                            <label>CVV:</label>
-                            <input type="number" className="form-control" value={cvv} onChange={e => setCVV(e.target.value)} />
-                          </div>
-                          <div className="col-md-6 form-group">
-                            <label>Nome do Titular:</label>
-                            <input type="text" className="form-control" value={holderName} onChange={e => setHolderName(e.target.value)} />
-                          </div>
-                          <div className="col-md-6 form-group">
-                            <label>CPF do Titular:</label>
-                            <InputMask mask="cpf" className="form-control" value={holderDocument} onChange={e => setHolderDocument(e.target.value)} />
-                          </div>
-                        </div>) : (payment === 2 ? (<>
-                        </>) : (<></>))}
+                      <div className="col-md-6">
+                        <span className={'btn btn-light btn-block border py-4 text-center ' + (payment === 2 ? 'bg-primary text-white' : 'text-dark')} onClick={_ => setPayment(2)}>
+                          <i className="fas fa-barcode fa-5x"></i><br />
+                          <b className="d-inline-block mt-3">BOLETO</b>
+                        </span>
+                      </div>
                     </div>
+                    {payment === 1 ? (
+                      <div className="form-row mt-3">
+                        <div className="col-md-4 form-group">
+                          <label>Número do Cartão:</label>
+                          <InputMask mask="num" className="form-control" value={cardNumber} onChange={e => setCardNumber(e.target.value)} />
+                        </div>
+                        <div className="col-md-2 form-group">
+                          <label>Expiração (Mês):</label>
+                          <select className="form-control" value={expirateMonth} onChange={e => setExpirateMonth(e.target.value)}>
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((a, i) => (
+                              <option key={i} value={String(a).padStart(2, '0')}>{String(a).padStart(2, '0')}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="col-md-2 form-group">
+                          <label>Expiração (Ano):</label>
+                          <select className="form-control" value={expirateYear} onChange={e => setExpirateYear(e.target.value)}>
+                            {[2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030].map((a, i) => (
+                              <option key={i} value={a}>{a}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="col-md-4 form-group">
+                          <label>CVV:</label>
+                          <input type="number" className="form-control" value={cvv} onChange={e => setCVV(e.target.value)} />
+                        </div>
+                        <div className="col-md-6 form-group">
+                          <label>Nome do Titular:</label>
+                          <input type="text" className="form-control" value={holderName} onChange={e => setHolderName(e.target.value)} />
+                        </div>
+                        <div className="col-md-6 form-group">
+                          <label>CPF do Titular:</label>
+                          <InputMask mask="cpf" className="form-control" value={holderDocument} onChange={e => setHolderDocument(e.target.value)} />
+                        </div>
+                      </div>) : (payment === 2 ? (<>
+                      </>) : (<></>))}
                   </div>
                 </div>
               </div>
-              <div className="row mt-3">
-                <div className="col-md-12 text-right">
-                  <span className="btn btn-warning mr-3" onClick={_ => setPage(1)}>VOLTAR</span>
-                  <button type="submit" className="btn btn-primary">PROCESSAR PAGAMENTO</button>
+            </div>
+            <div className="row mt-3">
+              <div className="col-md-12 text-right">
+                <span className="btn btn-warning mr-3" onClick={_ => setPage(1)}>VOLTAR</span>
+                <button type="submit" className="btn btn-primary">PROCESSAR PAGAMENTO</button>
+              </div>
+            </div>
+          </form>
+        ) : <></>}
+        {page === 3 ? (
+          <div className="card mt-3">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12">
+                  <h1 className="text-center">Pagamento processado com sucesso!</h1>
+                  <h4 className="mt-4">Dados do Pagamento:</h4>
+                  <div className="bg-light border p-3">
+                    <code>{JSON.stringify(transaction, null, 4)}</code>
+                  </div>
                 </div>
               </div>
-            </form>
-          )}
+            </div>
+          </div>
+        ) : <></>}
       </div>
     </>
   );
