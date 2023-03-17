@@ -6,13 +6,6 @@
 - Docker
 - Docker Compose (aceite version '2')
 
-# Entendendo a estrutura 
-```
-.
-+-- front (desenvolvimento front)
-+-- back (desenvolvimento back)
-```
-
 # Instruções de instalação #
 - Acesse a pasta onde irá clonar o projeto
 
@@ -20,12 +13,7 @@
 ```
 $ docker pull ertfly/php8.1-apache-buster
 ```
-> **_NOTA:_**  A imagem foi criado por mim e pode validar o Dockerfile no link https://github.com/ertfly/dockerfile-php7.4.9-apache-buster
-
-- Faça o pull da imagem **mariadb** (Imagem oficial)
-```
-$ docker pull mariadb
-```
+> **_NOTA:_**  A imagem foi criado por mim e pode validar o Dockerfile no link https://github.com/ertfly/dockerfile-php8.1-apache-buster
 
 - Escolha uma pasta de preferência e clone o projeto
 ```
@@ -35,6 +23,13 @@ $ git clone https://github.com/ertfly/teste-redbelt.git
 - Acesse a pasta do projeto
 ```
 $ cd teste-redbelt
+```
+
+# Entendendo a estrutura 
+```
+.
++-- front (desenvolvimento front)
++-- back (desenvolvimento back)
 ```
 
 - Copie o arquivo **docker-compose.sample.yml** renomeando para **docker-compose.yml**
