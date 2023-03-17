@@ -2,13 +2,14 @@ version: '2'
 services:
   front:
     container_name: test.front
-    image: node:18
+    image: ertfly/php8.1-apache-buster
+    restart: always
     ports:
-      - '3000:3000'
+      - '3000:80'
     volumes:
-      - ./front:/srv/react-docker
-    working_dir: /srv/react-docker
-    command: 'npm start'
+      - ./front/build:/app/public
+    networks:
+      - test-net
   back:
     container_name: test.back
     image: ertfly/php8.1-apache-buster
