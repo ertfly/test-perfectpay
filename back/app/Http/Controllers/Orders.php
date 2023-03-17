@@ -28,17 +28,36 @@ class Orders extends BaseController
         $name = $request->get('name');
         $name = explode(' ', $name);
 
-        $payment->transaction_amount = intval($request->get('total'))/100;
-        $payment->token = $request->get('cardToken');
-        $payment->description = "Teste PerfectPay";
-        $payment->installments = 1;
-        $payment->payment_method_id = $request->get('paymentMethodId');
-        $payment->payer = array(
+        $payer = [
             "first_name" => $name[0] ?? null,
             "last_name" => $name[1] ?? null,
             "email" => $request->get('email'),
-        );
-        $payment->capture = true;
+        ];
+        if ($request->get('paymentMethodId') != 'bolbradesco') {
+            $payment->token = $request->get('cardToken');
+            $payment->installments = 1;
+            $payment->capture = true;
+        } else {
+            $payer = array_merge($payer, [
+                "identification" => array(
+                    "type" => "CPF",
+                    "number" => "19119119100"
+                ),
+                "address" =>  array(
+                    "zip_code" => "06233200",
+                    "street_name" => "Av. das Nações Unidas",
+                    "street_number" => "3003",
+                    "neighborhood" => "Bonfim",
+                    "city" => "Osasco",
+                    "federal_unit" => "SP"
+                )
+            ]);
+        }
+
+        $payment->transaction_amount = intval($request->get('total')) / 100;
+        $payment->description = "Teste PerfectPay";
+        $payment->payment_method_id = $request->get('paymentMethodId');
+        $payment->payer = $payer;
         $payment->save();
 
         return [

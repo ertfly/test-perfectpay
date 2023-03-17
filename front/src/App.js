@@ -58,6 +58,14 @@ function App() {
   const [holderDocument, setHolderDocument] = useState('')
   const [transaction, setTransaction] = useState({})
 
+  const [invoiceDocument, setInvoiceDocument] = useState('')
+  const [invoiceZipcode, setInvoiceZipcode] = useState('')
+  const [invoiceStreetName, setInvoiceStreetName] = useState('')
+  const [invoiceStreetNumber, setInvoiceStreetNumber] = useState('')
+  const [invoiceNeighborhood, setInvoiceNeighborhood] = useState('')
+  const [invoiceCity, setInvoiceCity] = useState('')
+  const [invoiceFederalUnit, setInvoiceFederalUnit] = useState('')
+
   const submitPersonalData = (e) => {
     e.preventDefault()
     if (name.trim() === '' || email.trim() === '' || total.trim() === '') {
@@ -254,8 +262,71 @@ function App() {
                           <label>CPF do Titular:</label>
                           <InputMask mask="cpf" className="form-control" value={holderDocument} onChange={e => setHolderDocument(e.target.value)} />
                         </div>
-                      </div>) : (payment === 2 ? (<>
-                      </>) : (<></>))}
+                      </div>) : (payment === 2 ? (
+                        <>
+                          <div className="form-row mt-3">
+                            <div className="col-md-3 form-group">
+                              <label>CPF do Titular:</label>
+                              <InputMask mask="cpf" className="form-control" value={invoiceDocument} onChange={e => setInvoiceDocument(e.target.value)} />
+                            </div>
+                          </div>
+                          <div className="form-row">
+                            <div className="col-md-3 form-group">
+                              <label>CEP:</label>
+                              <InputMask mask="cep" className="form-control" value={invoiceZipcode} onChange={e => setInvoiceZipcode(e.target.value)} />
+                            </div>
+                            <div className="col-md-3 form-group">
+                              <label>Logradouro:</label>
+                              <input type="text" className="form-control" value={invoiceStreetName} onChange={e => setInvoiceStreetName(e.target.value)} />
+                            </div>
+                            <div className="col-md-3 form-group">
+                              <label>Número:</label>
+                              <InputMask mask="num" className="form-control" value={invoiceStreetNumber} onChange={e => setInvoiceStreetNumber(e.target.value)} />
+                            </div>
+                            <div className="col-md-3 form-group">
+                              <label>Bairro:</label>
+                              <input type="text" className="form-control" value={invoiceNeighborhood} onChange={e => setInvoiceNeighborhood(e.target.value)} />
+                            </div>
+                            <div className="col-md-3 form-group">
+                              <label>Cidade:</label>
+                              <input type="text" className="form-control" value={invoiceCity} onChange={e => setInvoiceCity(e.target.value)} />
+                            </div>
+                            <div className="col-md-3 form-group">
+                              <label>UF:</label>
+                              <select className="form-control" value={invoiceFederalUnit} onChange={e => setInvoiceFederalUnit(e.target.value)}>
+                                <option value="">Selecione</option>
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espírito Santo</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option>
+                              </select>
+                            </div>
+                          </div>
+                        </>
+                      ) : (<></>))}
                   </div>
                 </div>
               </div>
