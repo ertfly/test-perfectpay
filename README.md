@@ -34,9 +34,9 @@ $ cd test-perfectpay
 +-- back (desenvolvimento back)
 ```
 
-- Copie o arquivo **docker-compose.sample.yml** renomeando para **docker-compose.yml**
+- Copie o arquivo **docker-compose-sample.yml** renomeando para **docker-compose.yml**
 ```
-$ cp docker-compose.sample.yml docker-compose.yml
+$ cp docker-compose-sample.yml docker-compose.yml
 ```
 > **_NOTA:_**  Os arquivos copiados estão aplicados no .gitignore, e não causará efeitos de modificação
 
