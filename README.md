@@ -12,7 +12,6 @@
 +-- front (desenvolvimento front)
 +-- back (desenvolvimento back)
 ```
-> **_NOTA:_**  Nas pastas **public** e **public/api** já tem o htaccess para tratar as rotas
 
 # Instruções de instalação #
 - Acesse a pasta onde irá clonar o projeto
