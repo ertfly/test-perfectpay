@@ -55,6 +55,16 @@ $ cp .env.example .env
 $ cd ../
 ```
 
+- Acesse a pasta do front.
+```
+$ cd front
+```
+
+- Copie o arquivo **.env.sample** renomeando para **.env**
+```
+$ cp .env.sample .env
+```
+
 - Criei o network dos containers
 ```
 $ docker network create test-net
